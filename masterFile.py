@@ -1,6 +1,6 @@
-#masterFile for HVS
+#masterFile for GUI for HVS
 #Written by Albert Fabrizi
-#Version: July 9,  2020 11:21
+#Version: July 10, 2020 10:24
 
 from Tkinter import *
 import Tkinter as tk
