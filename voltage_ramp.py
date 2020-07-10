@@ -37,7 +37,7 @@ def voltageRampCheck():
     voltage = voltageReading * voltageConversion
     return voltage, current
 
-def voltage_ramp_up(goalVoltage):
+def voltageRampUp(goalVoltage):
     
     bitVoltage = 0
     bitCurrent = 4095
@@ -77,6 +77,7 @@ def voltage_ramp_up(goalVoltage):
         prevTime = livetime
         print('-----------------------------')        
         print('voltage (0 to 3000 V): ' + str(voltage))
+        print('voltage (Reading): ' + str(voltageReading))
         print('-----------------------------')
         print('max current (0 to 10 V): ' + str(current))
         print('-----------------------------')
@@ -87,15 +88,17 @@ def voltage_ramp_up(goalVoltage):
             print('-----------------------------')
             dac97.set_voltage(bitVoltage)
         else:
-            hold_value(goalVoltage, bitVoltage)
+            holdValue(goalVoltage, bitVoltage)
             break
 
-def voltage_ramp_down(goalVoltage):
+def voltageRampDown(goalVoltage):
     #get initial values
     voltageReading = mcp3428.take_single_reading(0)
     currentReading = mcp3428.take_single_reading(1)
     bitCurrent = 4095
-    bitVoltage = 2450
+
+    #for now this number has to be manually changed to properly use ramp down
+    bitVoltage = 250
     
     prevTime = time.time()
 
@@ -117,7 +120,7 @@ def voltage_ramp_down(goalVoltage):
         print('max current: ' + str(current))
         print('-----------------------------')
 
-        if voltage > goalVoltage and voltage >= 100:
+        if voltage > goalVoltage: #and voltage >= 100:
             bitVoltage -= 50
             print('bit: ' + str(bitVoltage))
             print('-----------------------------')
@@ -128,7 +131,7 @@ def voltage_ramp_down(goalVoltage):
 
 
 
-def hold_value(goalVoltage, bitVoltage):
+def holdValue(goalVoltage, bitVoltage):
     print('Bringing to ' + str(goalVoltage) + 'Volts.....')
     counts = 0
     bitCurrent = 4095
@@ -136,7 +139,7 @@ def hold_value(goalVoltage, bitVoltage):
         voltageReading = mcp3428.take_single_reading(0)
         voltage = voltageReading * voltageConversion
 
-        if counts >= 50:
+        if counts >= 100:
             dac97.set_voltage(bitVoltage)
             break
         counts = counts + 1
@@ -155,6 +158,6 @@ if __name__ == '__main__':
     goalVoltage = int(input('Enter high voltage amount: '))
     voltRead = mcp3428.take_single_reading(0)
     if voltRead < goalVoltage:
-        voltage_ramp_up(goalVoltage)
+        voltageRampUp(goalVoltage)
     else:
-        voltage_ramp_down(goalVoltage)
+        voltageRampDown(goalVoltage)

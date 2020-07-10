@@ -1,12 +1,12 @@
 #masterFile for HVS
 #Written by Albert Fabrizi
-#Version: June 18, 2020 12:55
+#Version: July 9,  2020 11:21
 
 from Tkinter import *
 import Tkinter as tk
 import time
 import voltage_ramp
-from voltage_ramp import voltageRampCheck, voltage_ramp_up, voltage_ramp_down
+from voltage_ramp import voltageRampCheck, voltageRampUp, voltageRampDown
 import random
 
 mainWindow = Tk()
@@ -47,7 +47,7 @@ class Window(Frame):
         self.v_Entry.grid(row = 0, column = 1)
 
         #Button to pass entry to ramp voltage function
-        v_Activate = Button(mainWindow, text='Enter',command=self.ramp_Entry_Check)
+        v_Activate = Button(mainWindow, text='Enter',command=self.rampEntryCheck)
         v_Activate.grid(row = 0, column = 2)
 
 
@@ -58,11 +58,49 @@ class Window(Frame):
         voltage, current = voltageRampCheck()
 
         if goalVoltage > voltage:
-            voltage_ramp_up(goalVoltage)
+            #print information to the text box
+            self.text_box.configure(state = 'normal')
+            self.text_box.insert(tk.END, 'Voltage Ramping from ' + str(voltage) + '\n')
+            self.text_box.insert(tk.END, 'Voltage Ramping to ' + str(goalVoltage) + '\n')
+            self.text_box.insert(tk.END, '----------\n')
+            self.text_box.insert(tk.END, 'Max Current Set to ' + str(current) + '\n')
+            self.text_box.insert(tk.END, '----------\n')
+            self.text_box.configure(state = 'disabled')
+            #begin ramping up
+            voltageRampUp(goalVoltage)
+
+            #get updated information
+            voltage, current = voltageRampCheck()
+
+            #print updated information
+            self.text_box.configure(state = 'normal')
+            self.text_box.insert(tk.END, 'Voltage Brought to ' + str(voltage) + '\n')
+            self.text_box.insert(tk.END, '-----------\n')
+            self.text_box.configure(stated = 'disabled')
+            
         else:
-            voltage_ramp_down(goalVoltage)
+            #print information to the text box
+            self.text_box.configure(state = 'normal')
+            self.text_box.insert(tk.END, 'Voltage Ramping from ' + str(voltage) + '\n')
+            self.text_box.insert(tk.END, 'Voltage Ramping to ' + str(goalVoltage) + '\n')
+            self.text_box.insert(tk.END, '-----------\n')
+            self.text_box.insert(tk.END, 'Max Current Set to ' + str(current) + '\n')
+            self.text_box.insert(tk.END, '-----------\n')
+            self.text_box.configure(state = 'disabled')
+
+            #begin ramping down
+            voltageRampDown(goalVoltage)
+
+            #get updated information
+            voltage, current = voltageRampCheck()
+
+            #print updated information
+            self.text_box.configure(state = 'normal')
+            self.text_box.insert(tk.END, 'Voltage Brought to ' + str(voltage) + '\n')
+            self.text_box.insert(tk.END, '-----------\n')
+            self.text_box.configure(state = 'disabled')
         
-    def ramp_Entry_Check(self):
+    def rampEntryCheck(self):
         rampV = self.v_Entry.get()
         check = None
         try:#check if int
