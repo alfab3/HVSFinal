@@ -83,7 +83,7 @@ def voltageRampUp(goalVoltage):
         print('-----------------------------')
                 
         if voltage < goalVoltage:
-            bitVoltage += 50
+            bitVoltage += 25
             print('bit: ' + str(bitVoltage))
             print('-----------------------------')
             dac97.set_voltage(bitVoltage)
@@ -98,7 +98,7 @@ def voltageRampDown(goalVoltage):
     bitCurrent = 4095
 
     #for now this number has to be manually changed to properly use ramp down
-    bitVoltage = 250
+    bitVoltage = 2450
     
     prevTime = time.time()
 
@@ -121,7 +121,7 @@ def voltageRampDown(goalVoltage):
         print('-----------------------------')
 
         if voltage > goalVoltage: #and voltage >= 100:
-            bitVoltage -= 50
+            bitVoltage -= 25
             print('bit: ' + str(bitVoltage))
             print('-----------------------------')
             dac97.set_voltage(bitVoltage)
